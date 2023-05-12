@@ -236,7 +236,7 @@ module.exports = {
         sequelize.query(`
             SELECT * FROM countries
         `).then((dbRes) => res.status(200).send(dbRes[0]))
-        .catch(err => console.log(err)) 
+            .catch(err => console.log(err))
     },
 
     createCity: (req, res) => {
@@ -251,9 +251,30 @@ module.exports = {
         }).catch(err => console.log(err))
     },
 
-    // getCities: (req, res) => {
-    //     sequelize.query(`
+    getCities: (req, res) => {
+        sequelize.query(`
+            SELECT 
+            cities.city_id, 
+            cities.name AS city, 
+            cities.rating,
+            countries.name AS country
+            FROM cities
+            JOIN countries
+            ON countries.country_id=cities.country_id
+            ORDER BY rating desc            
+        `).then((dbRes) => {
+            res.status(200).send(dbRes[0])
+        }).catch(err => console.log(err))
+    },
 
-    //     `)
-    // }
+    deleteCity: (req, res) => {
+
+        let { id } = req.params
+
+        sequelize.query(`
+            DELETE FROM cities WHERE city_id = ${id}
+        `).then((dbRes) => {
+            res.status(200).send(dbRes[0])
+         }).catch((err) => console.log(err))
+    },
 }
